@@ -1,22 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Statics Solver</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Statics Calculator</title>
+  <link rel="stylesheet" href="style.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
 </head>
 <body>
   <div class="container">
     <h1>Statics Calculator</h1>
-    <label>W_rod: <input id="wRod" value="400"></label>
-    <label>W_crate: <input id="wCrate" value="1400"></label>
-    <label>Point A (x,y,z): <input id="aInput" value="3.5,1.5,0.5"></label>
-    <label>Point C (x,y,z): <input id="cInput" value="0,5,-1.5"></label>
-    <label>Point D (x,y,z): <input id="dInput" value="0,6.5,0.5"></label>
+
+    <label>W_rod (N):</label>
+    <input id="wRod" value="400" />
+
+    <label>W_crate (N):</label>
+    <input id="wCrate" value="1400" />
+
+    <label>Point A (x, y, z):</label>
+    <input id="aInput" value="3.5,1.5,0.5" />
+
+    <label>Point C (x, y, z):</label>
+    <input id="cInput" value="0,5,-1.5" />
+
+    <label>Point D (x, y, z):</label>
+    <input id="dInput" value="0,6.5,0.5" />
+
     <button onclick="solveStatics()">Solve</button>
+
     <div id="results"></div>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
