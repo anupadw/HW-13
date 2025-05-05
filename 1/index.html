@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>HW13.1. Horizontal Boom</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>HW13.1. Horizontal Boom</h1>
+
+    <label>Length L (meters):</label>
+    <input id="L" value="3.5" />
+
+    <label>Weight W (newtons):</label>
+    <input id="W" value="900" />
+
+    <label>Point D (x, y, z):</label>
+    <input id="D" value="1.5,0,2" />
+
+    <label>Point E (x, y, z):</label>
+    <input id="E" value="-1.5,0,2" />
+
+    <button onclick="solveStatics()">Solve</button>
+
+    <div id="results"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
