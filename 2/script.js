@@ -8,60 +8,74 @@ function solveStatics() {
   const A = parseVec(document.getElementById("aInput").value);
   const C = parseVec(document.getElementById("cInput").value);
   const D = parseVec(document.getElementById("dInput").value);
-  const O = [0, 0, 0];
 
   const unit = v => math.divide(v, math.norm(v));
-  const vec = (p1, p2) => math.subtract(p2, p1);
+  const vec = (from, to) => math.subtract(to, from);
+  const cross = (a, b) => [
+    a[1]*b[2] - a[2]*b[1],
+    a[2]*b[0] - a[0]*b[2],
+    a[0]*b[1] - a[1]*b[0]
+  ];
 
+  // Unit vectors
   const uAC = unit(vec(A, C));
   const uAD = unit(vec(A, D));
 
-  const T_AC = math.symbolicUtils.symbol('T_AC');
-  const T_AD = math.symbolicUtils.symbol('T_AD');
-  const Ax = math.symbolicUtils.symbol('Ax');
-  const Ay = math.symbolicUtils.symbol('Ay');
-  const Az = math.symbolicUtils.symbol('Az');
-
-  const AC = math.multiply(uAC, T_AC);
-  const AD = math.multiply(uAD, T_AD);
+  // Forces
   const WrodVec = [0, -W_rod, 0];
   const WcrateVec = [0, -W_crate, 0];
-  const A_vec = [Ax, Ay, Az];
 
-  const F_sum = math.add(math.add(math.add(math.add(AC, AD), WrodVec), WcrateVec), A_vec);
+  // Force equations (F_sum = 0)
+  const row1 = [uAC[0], uAD[0], 1, 0, 0]; // x-components
+  const row2 = [uAC[1], uAD[1], 0, 1, 0]; // y-components
+  const row3 = [uAC[2], uAD[2], 0, 0, 1]; // z-components
 
-  const cross = (a, b) => ([
-    math.subtract(math.multiply(a[1], b[2]), math.multiply(a[2], b[1])),
-    math.subtract(math.multiply(a[2], b[0]), math.multiply(a[0], b[2])),
-    math.subtract(math.multiply(a[0], b[1]), math.multiply(a[1], b[0]))
-  ]);
+  const Fx = -(WrodVec[0] + WcrateVec[0]);
+  const Fy = -(WrodVec[1] + WcrateVec[1]);
+  const Fz = -(WrodVec[2] + WcrateVec[2]);
 
-  const M_sum = math.add(
-    cross(A, AD),
-    cross(A, AC),
-    cross(A, WcrateVec),
-    cross(math.divide(A, 2), WrodVec)
-  );
+  // Moment equations (M_sum = 0)
+  const AD_cross = (T) => cross(A, math.multiply(T, uAD));
+  const AC_cross = (T) => cross(A, math.multiply(T, uAC));
+  const Wc_cross = cross(A, WcrateVec);
+  const Wr_cross = cross(math.divide(A, 2), WrodVec);
 
-  const eqns = [
-    math.equal(F_sum[0], 0),
-    math.equal(F_sum[1], 0),
-    math.equal(F_sum[2], 0),
-    math.equal(M_sum[0], 0),
-    math.equal(M_sum[1], 0),
-    math.equal(M_sum[2], 0),
+  // Only keep coefficients of T_AC, T_AD
+  const m1 = cross(A, uAC);
+  const m2 = cross(A, uAD);
+
+  const row4 = [m1[0], m2[0], 0, 0, 0];
+  const row5 = [m1[1], m2[1], 0, 0, 0];
+  const row6 = [m1[2], m2[2], 0, 0, 0];
+
+  const Mx = -(Wc_cross[0] + Wr_cross[0]);
+  const My = -(Wc_cross[1] + Wr_cross[1]);
+  const Mz = -(Wc_cross[2] + Wr_cross[2]);
+
+  // Combine all rows
+  const A_matrix = [
+    row1,
+    row2,
+    row3,
+    row4,
+    row5,
+    row6
   ];
 
+  const b_vector = [Fx, Fy, Fz, Mx, My, Mz];
+
   try {
-    const solution = math.solve(eqns, ['T_AC', 'T_AD', 'Ax', 'Ay', 'Az']);
-    const res = solution[0]; // Assuming one solution
+    const solution = math.lusolve(A_matrix, b_vector);
+    const T_AC = solution[0][0].toFixed(2);
+    const T_AD = solution[1][0].toFixed(2);
 
-    const output = `T_AC = ${Number(res.T_AC).toFixed(2)}<br>` +
-                   `T_AD = ${Number(res.T_AD).toFixed(2)}`;
-
-    document.getElementById("results").innerHTML = output;
+    document.getElementById("results").innerHTML = `
+      <strong>Results:</strong><br>
+      T<sub>AC</sub> = ${T_AC} N<br>
+      T<sub>AD</sub> = ${T_AD} N
+    `;
   } catch (err) {
-    document.getElementById("results").innerHTML = "Error solving equations. Check inputs.";
+    document.getElementById("results").innerHTML = "❌ Error solving. Check input values.";
     console.error(err);
   }
 }
