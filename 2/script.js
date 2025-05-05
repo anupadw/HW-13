@@ -17,33 +17,38 @@ function solveStatics() {
   const C = parseVec(document.getElementById("cInput").value);
   const D = parseVec(document.getElementById("dInput").value);
 
+  const Wrod = [0, -W_rod, 0];
+  const Wcrate = [0, -W_crate, 0];
+
   // Unit vectors
   const AC_dir = math.subtract(C, A);
   const AD_dir = math.subtract(D, A);
   const uAC = math.divide(AC_dir, math.norm(AC_dir));
   const uAD = math.divide(AD_dir, math.norm(AD_dir));
 
-  // Forces
-  const Wrod = [0, -W_rod, 0];
-  const Wcrate = [0, -W_crate, 0];
+  // Cross products for moments
+  const crossA_AC = cross(A, uAC);
+  const crossA_AD = cross(A, uAD);
+  const crossA_Wcrate = cross(A, Wcrate);
+  const crossA2_Wrod = cross(math.divide(A, 2), Wrod);
 
-  // Set up system of 6 equations: 3 for force, 3 for moment
+  // System matrix (6 equations, 6 unknowns: T_AC, T_AD, Ax, Ay, Az, Mz helper)
   const A_matrix = [
-    [ uAC[0], uAD[0], 1, 0, 0 ], // Fx
-    [ uAC[1], uAD[1], 0, 1, 0 ], // Fy
-    [ uAC[2], uAD[2], 0, 0, 1 ], // Fz
-    cross(A, uAC)[0], cross(A, uAD)[0], 0, 0, 0, // Mx
-    cross(A, uAC)[1], cross(A, uAD)[1], 0, 0, 0, // My
-    cross(A, uAC)[2], cross(A, uAD)[2], 0, 0, 0  // Mz
+    [ uAC[0], uAD[0], 1, 0, 0, 0 ],  // Fx
+    [ uAC[1], uAD[1], 0, 1, 0, 0 ],  // Fy
+    [ uAC[2], uAD[2], 0, 0, 1, 0 ],  // Fz
+    [ crossA_AC[0], crossA_AD[0], 0, 0, 0, 1 ],  // Mx
+    [ crossA_AC[1], crossA_AD[1], 0, 0, 0, 0 ],  // My
+    [ crossA_AC[2], crossA_AD[2], 0, 0, 0, 0 ]   // Mz
   ];
 
   const b_vector = [
     -Wrod[0] - Wcrate[0],
     -Wrod[1] - Wcrate[1],
     -Wrod[2] - Wcrate[2],
-    -cross(A, Wcrate)[0] - cross(math.divide(A, 2), Wrod)[0],
-    -cross(A, Wcrate)[1] - cross(math.divide(A, 2), Wrod)[1],
-    -cross(A, Wcrate)[2] - cross(math.divide(A, 2), Wrod)[2]
+    -crossA_Wcrate[0] - crossA2_Wrod[0],
+    -crossA_Wcrate[1] - crossA2_Wrod[1],
+    -crossA_Wcrate[2] - crossA2_Wrod[2]
   ];
 
   try {
@@ -52,12 +57,12 @@ function solveStatics() {
     const T_AD = result[1][0].toFixed(2);
 
     document.getElementById("results").innerHTML = `
-      <strong>Results:</strong><br>
-      T<sub>AC</sub> = ${T_AC} N<br>
-      T<sub>AD</sub> = ${T_AD} N
+      <p><strong>Results:</strong></p>
+      <p>T<sub>AC</sub> = ${T_AC} N</p>
+      <p>T<sub>AD</sub> = ${T_AD} N</p>
     `;
   } catch (err) {
-    document.getElementById("results").innerHTML = "Error solving equations.";
+    document.getElementById("results").innerHTML = "Error solving equations. Check inputs.";
     console.error(err);
   }
 }
