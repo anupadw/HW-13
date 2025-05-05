@@ -7,16 +7,16 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
 </head>
 <body>
-  <h3>Statics Solver for T<sub>AC</sub> and T<sub>AD</sub></h3>
-  <p>Enter values below:</p>
-  <label>W_rod: <input id="wRod" type="number" value="400"></label>
-  <label>W_crate: <input id="wCrate" type="number" value="1400"></label>
-  <label>Point A [x,y,z]: <input id="aInput" type="text" value="3.5,1.5,0.5"></label>
-  <label>Point C [x,y,z]: <input id="cInput" type="text" value="0,5,-1.5"></label>
-  <label>Point D [x,y,z]: <input id="dInput" type="text" value="0,6.5,0.5"></label>
-  <br>
-  <button onclick="solveStatics()">Solve</button>
-  <div id="results">T_AC and T_AD will appear here.</div>
+  <div class="container">
+    <h1>Statics Calculator</h1>
+    <label>W_rod: <input id="wRod" value="400"></label>
+    <label>W_crate: <input id="wCrate" value="1400"></label>
+    <label>Point A (x,y,z): <input id="aInput" value="3.5,1.5,0.5"></label>
+    <label>Point C (x,y,z): <input id="cInput" value="0,5,-1.5"></label>
+    <label>Point D (x,y,z): <input id="dInput" value="0,6.5,0.5"></label>
+    <button onclick="solveStatics()">Solve</button>
+    <div id="results"></div>
+  </div>
   <script src="script.js"></script>
 </body>
 </html>
