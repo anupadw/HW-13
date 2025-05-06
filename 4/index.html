@@ -5,29 +5,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>HW13.4. Traffic Light</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
 </head>
 <body>
-  <h1>HW13.4. Traffic Light</h1>
   <div class="container">
-    <label>W_arm (N): <input type="number" id="W_arm" value="175" /></label>
-    <label>F_vec X (N): <input type="number" id="Fx" value="85" /></label>
-    <label>F_vec Y (N): <input type="number" id="Fy" value="-5" /></label>
-    
-    <label>Point A X (m): <input type="number" id="Ax" value="0" /></label>
-    <label>Point A Y (m): <input type="number" id="Ay" value="0" /></label>
-    <label>Point A Z (m): <input type="number" id="Az" value="0" /></label>
-    
-    <label>G_arm X (m): <input type="number" id="Gx" value="0" /></label>
-    <label>G_arm Y (m): <input type="number" id="Gy" value="9" /></label>
-    <label>G_arm Z (m): <input type="number" id="Gz" value="14" /></label>
-    
-    <label>P X (m): <input type="number" id="Px" value="0" /></label>
-    <label>P Y (m): <input type="number" id="Py" value="13" /></label>
-    <label>P Z (m): <input type="number" id="Pz" value="14" /></label>
-    
-    <button onclick="solveTraffic()">Solve</button>
-    <div id="output"></div>
+    <h1>HW13.4. Traffic Light</h1>
+
+    <form id="input-form">
+      <h2>Inputs</h2>
+
+      <label>W_arm: <input type="number" step="any" id="W_arm" value="175" /></label><br />
+
+      <label>F_vec (x): <input type="number" step="any" id="F_x" value="85" /></label>
+      <label>F_vec (y): <input type="number" step="any" id="F_y" value="-5" /></label><br />
+
+      <label>Point A (x): <input type="number" step="any" id="Ax_input" value="0" /></label>
+      <label>Point A (y): <input type="number" step="any" id="Ay_input" value="0" /></label>
+      <label>Point A (z): <input type="number" step="any" id="Az_input" value="18" /></label><br />
+
+      <label>G_arm (x): <input type="number" step="any" id="Gx" value="0" /></label>
+      <label>G_arm (y): <input type="number" step="any" id="Gy" value="9" /></label>
+      <label>G_arm (z): <input type="number" step="any" id="Gz" value="14" /></label><br />
+
+      <label>P (x): <input type="number" step="any" id="Px" value="0" /></label>
+      <label>P (y): <input type="number" step="any" id="Py" value="13" /></label>
+      <label>P (z): <input type="number" step="any" id="Pz" value="14" /></label><br />
+
+      <button type="button" onclick="solveTrafficLight()">Solve</button>
+    </form>
+
+    <div id="output">
+      <h2>Outputs</h2>
+      <p id="Ax"></p>
+      <p id="Ay"></p>
+      <p id="Az"></p>
+      <p id="Mx"></p>
+      <p id="My"></p>
+      <p id="Mz"></p>
+      <p id="error" style="color: red;"></p>
+    </div>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
