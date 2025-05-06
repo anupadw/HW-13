@@ -1,59 +1,101 @@
+/* General page styling */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f4f8;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f9;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
 }
 
+/* Container for the form and results */
 .container {
-    text-align: center;
-    background-color: white;
+    background-color: #fff;
     padding: 30px;
     border-radius: 10px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-    width: 350px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
 }
 
+/* Title */
 h1 {
-    font-size: 24px;
+    font-size: 28px;
     margin-bottom: 20px;
+    color: #333;
+}
+
+/* Form styling */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+label {
+    font-size: 16px;
+    margin-top: 10px;
+    color: #333;
 }
 
 input[type="number"],
 input[type="text"] {
-    padding: 8px;
+    padding: 10px;
     font-size: 16px;
-    margin: 5px 0;
+    margin-top: 5px;
     width: 80%;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+    transition: border-color 0.3s;
 }
 
+input[type="number"]:focus,
+input[type="text"]:focus {
+    border-color: #4CAF50;
+    outline: none;
+}
+
+/* Button styling */
 button {
-    padding: 10px 20px;
-    font-size: 16px;
+    padding: 12px 25px;
+    font-size: 18px;
+    color: #fff;
     background-color: #4CAF50;
-    color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-top: 10px;
+    transition: background-color 0.3s;
+    margin-top: 20px;
 }
 
 button:hover {
     background-color: #45a049;
 }
 
+/* Output section styling */
 #output {
-    margin-top: 20px;
+    margin-top: 30px;
     display: none;
+    font-size: 18px;
 }
 
-h2 {
-    font-size: 20px;
-    margin-bottom: 10px;
+#output p {
+    margin: 10px 0;
+    font-weight: bold;
+}
+
+#output span {
+    color: #4CAF50;
+}
+
+/* Error message styling */
+#error {
+    color: red;
+    font-weight: bold;
+    margin-top: 20px;
 }
