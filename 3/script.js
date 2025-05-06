@@ -29,33 +29,40 @@ document.getElementById('calcForm').addEventListener('submit', function (e) {
     ];
   }
 
-  // System of equations setup for forces and moments
-  const Aeq = [
-    // Force equilibrium equations
-    [0, 0, 1], // F_A
-    [0, 0, 1], // F_B
-    [0, 0, 1], // F_C
+  // Construct the system of equations
+  const eqn1 = [1, 0, 0]; // Force equilibrium (F_A, F_B, F_C)
+  const eqn2 = [0, 1, 0];
+  const eqn3 = [0, 0, 1];
 
-    // Moment equilibrium equations (cross products for the 3 components)
-    cross(A3, [0, 0, 1]),
-    cross(B3, [0, 0, 1]),
-    cross(C3, [0, 0, 1])
+  // Moment equilibrium equations
+  const M_A = cross(A3, [0, 0, 1]);
+  const M_B = cross(B3, [0, 0, 1]);
+  const M_C = cross(C3, [0, 0, 1]);
+
+  const eqn4 = M_A;
+  const eqn5 = M_B;
+  const eqn6 = M_C;
+
+  // Building the Aeq matrix (6x6)
+  const Aeq = [
+    eqn1, eqn2, eqn3,  // Force equations
+    eqn4, eqn5, eqn6   // Moment equations
   ];
 
+  // Right-hand side (forces and moments)
   const b = [
-    // Force equations
-    W_vec[0], W_vec[1], W_vec[2],
-
-    // Moment balance
+    W_vec[0], W_vec[1], W_vec[2], 
     ...cross(W_loc, W_vec)
   ];
 
   try {
+    // Solve the system
     const result = math.lusolve(Aeq, b);
     const F_A = result[0][0];
     const F_B = result[1][0];
     const F_C = result[2][0];
 
+    // Output results
     document.getElementById('F_A').textContent = F_A.toFixed(4);
     document.getElementById('F_B').textContent = F_B.toFixed(4);
     document.getElementById('F_C').textContent = F_C.toFixed(4);
