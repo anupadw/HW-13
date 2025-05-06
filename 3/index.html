@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HW13.3. Hoisting a Stone Slab</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>HW13.3. Hoisting a Stone Slab</h1>
+        <form id="calcForm">
+            <label for="W">Weight (W):</label>
+            <input type="number" id="W" value="18">
+            
+            <label for="l">Length (l):</label>
+            <input type="number" id="l" value="12">
+            
+            <label for="d">Distance (d):</label>
+            <input type="number" id="d" value="8">
+            
+            <label for="A">A Coordinates (A_x, A_y):</label>
+            <input type="number" id="A_x" value="6">
+            <input type="number" id="A_y" value="1.8">
+            
+            <label for="B">B Coordinates (B_x, B_y):</label>
+            <input type="number" id="B_x" value="0.4">
+            <input type="number" id="B_y" value="4.8">
+            
+            <label for="C">C Coordinates (C_x, C_y):</label>
+            <input type="number" id="C_x" value="5.6">
+            <input type="number" id="C_y" value="10.2">
+            
+            <button type="submit">Calculate</button>
+        </form>
+
+        <div id="output">
+            <h2>Results</h2>
+            <p><strong>F_A:</strong> <span id="F_A">-</span></p>
+            <p><strong>F_B:</strong> <span id="F_B">-</span></p>
+            <p><strong>F_C:</strong> <span id="F_C">-</span></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
