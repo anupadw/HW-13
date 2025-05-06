@@ -29,39 +29,29 @@ document.getElementById('calcForm').addEventListener('submit', function (e) {
     ];
   }
 
+  // System of equations setup for forces and moments
   const Aeq = [
-    // Force equations (x, y, z)
-    [0, 0, 1],
-    [0, 0, 1],
-    [0, 0, 1],
+    // Force equilibrium equations
+    [0, 0, 1], // F_A
+    [0, 0, 1], // F_B
+    [0, 0, 1], // F_C
 
-    // Moment equations (x, y, z)
+    // Moment equilibrium equations (cross products for the 3 components)
     cross(A3, [0, 0, 1]),
     cross(B3, [0, 0, 1]),
     cross(C3, [0, 0, 1])
   ];
 
-  const b = math.matrix([
-    -W_vec[0],
-    -W_vec[1],
-    -W_vec[2],
-    ...math.subtract(
-      math.multiply(-1, cross(W_loc, W_vec)),
-      [0, 0, 0]
-    )
-  ]);
+  const b = [
+    // Force equations
+    W_vec[0], W_vec[1], W_vec[2],
 
-  const A_matrix = math.matrix([
-    Aeq[0],
-    Aeq[1],
-    Aeq[2],
-    Aeq[3],
-    Aeq[4],
-    Aeq[5]
-  ]);
+    // Moment balance
+    ...cross(W_loc, W_vec)
+  ];
 
   try {
-    const result = math.lusolve(A_matrix, b);
+    const result = math.lusolve(Aeq, b);
     const F_A = result[0][0];
     const F_B = result[1][0];
     const F_C = result[2][0];
