@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HW13.3. Hoisting a Stone Slab</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.0.0/math.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -19,17 +20,14 @@
             <label for="d">Distance (d):</label>
             <input type="number" id="d" value="8">
             
-            <label for="A">A Coordinates (A_x, A_y):</label>
-            <input type="number" id="A_x" value="6">
-            <input type="number" id="A_y" value="1.8">
+            <label for="A">A Coordinates (x, y):</label>
+            <input type="text" id="A" value="6,1.8">
             
-            <label for="B">B Coordinates (B_x, B_y):</label>
-            <input type="number" id="B_x" value="0.4">
-            <input type="number" id="B_y" value="4.8">
+            <label for="B">B Coordinates (x, y):</label>
+            <input type="text" id="B" value="0.4,4.8">
             
-            <label for="C">C Coordinates (C_x, C_y):</label>
-            <input type="number" id="C_x" value="5.6">
-            <input type="number" id="C_y" value="10.2">
+            <label for="C">C Coordinates (x, y):</label>
+            <input type="text" id="C" value="5.6,10.2">
             
             <button type="submit">Calculate</button>
         </form>
