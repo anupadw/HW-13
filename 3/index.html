@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>HW13.3. Hoisting a Stone Slab</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>HW13.3. Hoisting a Stone Slab</h1>
+
+    <label>Weight W (kN):</label>
+    <input id="W" value="18" />
+
+    <label>Length l (m):</label>
+    <input id="l" value="12" />
+
+    <label>Depth d (m):</label>
+    <input id="d" value="8" />
+
+    <label>Point A (x, y):</label>
+    <input id="A" value="6,1.8" />
+
+    <label>Point B (x, y):</label>
+    <input id="B" value="0.4,4.8" />
+
+    <label>Point C (x, y):</label>
+    <input id="C" value="5.6,10.2" />
+
+    <button onclick="solveStatics()">Solve</button>
+
+    <div id="results"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
