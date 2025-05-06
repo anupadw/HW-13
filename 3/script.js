@@ -14,13 +14,13 @@ document.getElementById('calcForm').addEventListener('submit', function (e) {
         return;
     }
 
-    const A3 = [A[0], A[1], 0];
-    const B3 = [B[0], B[1], 0];
-    const C3 = [C[0], C[1], 0];
-    const W_vec = [0, 0, -W];
-    const W_loc = [d / 2, l / 2, 0];
+    const A3 = [A[0], A[1], 0]; // Adding 0 for z-coordinate
+    const B3 = [B[0], B[1], 0]; // Adding 0 for z-coordinate
+    const C3 = [C[0], C[1], 0]; // Adding 0 for z-coordinate
+    const W_vec = [0, 0, -W]; // Weight as a force vector (only in the z-direction)
+    const W_loc = [d / 2, l / 2, 0]; // The location of the weight
 
-    // Cross product function
+    // Cross product function for calculating moments
     function cross(u, v) {
         return [
             u[1] * v[2] - u[2] * v[1],
@@ -29,45 +29,47 @@ document.getElementById('calcForm').addEventListener('submit', function (e) {
         ];
     }
 
-    // Force and moment equations
-    const eqn1 = [1, 0, 0, 0, 0, 0]; // Force equilibrium in x
-    const eqn2 = [0, 1, 0, 0, 0, 0]; // Force equilibrium in y
-    const eqn3 = [0, 0, 1, 0, 0, 0]; // Force equilibrium in z
+    // Setting up equations for force and moment equilibrium
+    const eqn1 = [1, 0, 0, 0, 0, 0]; // Force equilibrium in x-direction
+    const eqn2 = [0, 1, 0, 0, 0, 0]; // Force equilibrium in y-direction
+    const eqn3 = [0, 0, 1, 0, 0, 0]; // Force equilibrium in z-direction
 
-    const M_A = cross(A3, [0, 0, 1]);
-    const M_B = cross(B3, [0, 0, 1]);
-    const M_C = cross(C3, [0, 0, 1]);
+    // Moment equilibrium equations
+    const M_A = cross(A3, [1, 0, 0]); // Moment for point A (about x-axis)
+    const M_B = cross(B3, [1, 0, 0]); // Moment for point B (about x-axis)
+    const M_C = cross(C3, [1, 0, 0]); // Moment for point C (about x-axis)
 
-    const eqn4 = [...M_A]; // Moment equilibrium for A
-    const eqn5 = [...M_B]; // Moment equilibrium for B
-    const eqn6 = [...M_C]; // Moment equilibrium for C
-
-    // Create coefficient matrix for the system of equations
+    // Now creating the full system of equations
     const Aeq = [
         eqn1, eqn2, eqn3, 
-        eqn4, eqn5, eqn6
+        [...M_A], [...M_B], [...M_C]
     ];
 
-    // Create the constants vector (forces and moments)
+    // Right-hand side vector (forces and moments)
     const b = [
-        W_vec[0], W_vec[1], W_vec[2],
-        ...cross(W_loc, W_vec)
+        W_vec[0], W_vec[1], W_vec[2], 
+        ...cross(W_loc, W_vec)  // Cross product of location and weight vector
     ];
+
+    // Checking the matrix dimensions before solving
+    console.log("Matrix Aeq:", Aeq);
+    console.log("Vector b:", b);
 
     try {
-        // Solve system of equations
+        // Solving the system of equations
         const result = math.lusolve(Aeq, b);
-        const F_A = result[0][0];
-        const F_B = result[1][0];
-        const F_C = result[2][0];
+        const F_A = result[0][0]; // Force at A
+        const F_B = result[1][0]; // Force at B
+        const F_C = result[2][0]; // Force at C
 
-        // Output results
+        // Display the results
         document.getElementById('F_A').textContent = F_A.toFixed(4);
         document.getElementById('F_B').textContent = F_B.toFixed(4);
         document.getElementById('F_C').textContent = F_C.toFixed(4);
         document.getElementById('output').style.display = 'block';
         document.getElementById('error').textContent = '';
     } catch (err) {
+        // Handling error in case of any issues
         document.getElementById('error').textContent = "Error solving system. Check your input.";
         document.getElementById('output').style.display = 'none';
         console.error(err);
