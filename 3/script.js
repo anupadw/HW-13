@@ -5,32 +5,28 @@ document.getElementById('calcForm').addEventListener('submit', function(event) {
     const W = parseFloat(document.getElementById('W').value);
     const l = parseFloat(document.getElementById('l').value);
     const d = parseFloat(document.getElementById('d').value);
-    const A_x = parseFloat(document.getElementById('A_x').value);
-    const A_y = parseFloat(document.getElementById('A_y').value);
-    const B_x = parseFloat(document.getElementById('B_x').value);
-    const B_y = parseFloat(document.getElementById('B_y').value);
-    const C_x = parseFloat(document.getElementById('C_x').value);
-    const C_y = parseFloat(document.getElementById('C_y').value);
+
+    // Parse coordinates input
+    const parseCoordinates = (coords) => {
+        const [x, y] = coords.split(',').map(parseFloat);
+        return [x, y, 0]; // Add the z-coordinate as 0
+    };
+
+    const A = parseCoordinates(document.getElementById('A').value);
+    const B = parseCoordinates(document.getElementById('B').value);
+    const C = parseCoordinates(document.getElementById('C').value);
 
     // Constants
-    const A = [A_x, A_y, 0];
-    const B = [B_x, B_y, 0];
-    const C = [C_x, C_y, 0];
-
     const d2 = d / 2;
-
-    // System of equations based on force equilibrium and moment equilibrium
+    
+    // Matrix setup
     const matrix = [
-        [1, 0, -1, 0, 0],
-        [0, 1, 0, -1, 0],
-        [0, 0, 0, 0, -1],
-        [0, 0, 1, 0, 0],
-        [0, 0, 0, 1, 0],
-        [0, 0, 0, 0, 1]
+        [A[1], B[1], C[1]],  // force components for F_A, F_B, F_C (simplified)
+        [A[0], B[0], C[0]],  // force components for F_A, F_B, F_C (simplified)
+        [1, 1, 1]             // additional constraint equation
     ];
 
-    // Solving the system of equations (using Cramer's rule or another method)
-    const forces = solveEquations(matrix, [W, 0, 0, 0, 0, 0]);
+    const forces = solveSystem(matrix, [W, 0, 0]);
 
     // Display results
     document.getElementById('output').style.display = 'block';
@@ -39,13 +35,25 @@ document.getElementById('calcForm').addEventListener('submit', function(event) {
     document.getElementById('F_C').textContent = forces.F_C.toFixed(2);
 });
 
-// Simple example solver function (you might need to implement a full solver)
-function solveEquations(matrix, values) {
-    const F_A = values[0];
-    const F_B = values[1];
-    const F_C = values[2];
-
-    // Normally you'd solve the system of equations here, 
-    // but as an example, let's return mock data:
-    return { F_A, F_B, F_C };
+// Function to solve system of equations
+function solveSystem(matrix, values) {
+    try {
+        // Using math.js to solve the system
+        const math = window.math;
+        const A = math.matrix(matrix);
+        const b = math.matrix(values);
+        
+        // Solve the system Ax = b
+        const x = math.lusolve(A, b);
+        
+        // Extract results
+        return {
+            F_A: x[0][0], // Force at point A
+            F_B: x[1][0], // Force at point B
+            F_C: x[2][0]  // Force at point C
+        };
+    } catch (error) {
+        console.error("Error solving system: ", error);
+        return { F_A: "Error", F_B: "Error", F_C: "Error" };
+    }
 }
