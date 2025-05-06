@@ -1,7 +1,6 @@
 document.getElementById('calcForm').addEventListener('submit', function (e) {
   e.preventDefault();
 
-  // Get inputs
   const W = parseFloat(document.getElementById('W').value);
   const l = parseFloat(document.getElementById('l').value);
   const d = parseFloat(document.getElementById('d').value);
@@ -20,39 +19,43 @@ document.getElementById('calcForm').addEventListener('submit', function (e) {
   }
 
   try {
-    // 3D vectors
+    // Convert to 3D
     const A3 = [A[0], A[1], 0];
     const B3 = [B[0], B[1], 0];
     const C3 = [C[0], C[1], 0];
     const W_vec = [0, 0, -W];
     const W_loc = [d / 2, l / 2, 0];
 
-    // Cross product utility
-    const cross = (u, v) => [
-      u[1] * v[2] - u[2] * v[1],
-      u[2] * v[0] - u[0] * v[2],
-      u[0] * v[1] - u[1] * v[0],
+    // Cross product helper
+    const crossZ = (r, Fz) => r[0] * 0 - r[1] * Fz; // only z component needed since force is vertical
+
+    // Build coefficient matrix:
+    // Row 1: F_A + F_B + F_C = W
+    // Row 2: Moment about x (z-components from cross product with y)
+    // Row 3: Moment about y (z-components from cross product with x)
+    const Aeq = [
+      [1, 1, 1],
+      [-A3[1], -B3[1], -C3[1]],
+      [A3[0], B3[0], C3[0]]
     ];
 
-    // Only z-component of forces: [0, 0, F]
-    // So we only use the third component of the moment (x,y parts cancel)
-    const Aeq = [
-      [0, 0, 1],                        // ΣFz = W
-      [A3[0], B3[0], C3[0]],            // ΣMy (x components)
-      [A3[1], B3[1], C3[1]]             // ΣMx (y components)
+    // Right-hand side
+    const M_W = [
+      -W_loc[1] * W_vec[2], // moment about x (from y)
+      W_loc[0] * W_vec[2]   // moment about y (from x)
     ];
-    const M_W = cross(W_loc, W_vec);   // Moment due to weight
+
     const beq = [
       W,
-      -M_W[1],
-      M_W[0]
+      -M_W[0],
+      -M_W[1]
     ];
 
-    const solution = math.lusolve(Aeq, beq);
+    const result = math.lusolve(Aeq, beq);
 
-    const F_A = solution[0][0];
-    const F_B = solution[1][0];
-    const F_C = solution[2][0];
+    const F_A = result[0][0];
+    const F_B = result[1][0];
+    const F_C = result[2][0];
 
     document.getElementById('F_A').textContent = F_A.toFixed(2);
     document.getElementById('F_B').textContent = F_B.toFixed(2);
