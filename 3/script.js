@@ -30,7 +30,7 @@ document.getElementById('calcForm').addEventListener('submit', function (e) {
   }
 
   const Aeq = [
-    // Force equations
+    // Force equations (x, y, z)
     [0, 0, 1],
     [0, 0, 1],
     [0, 0, 1],
