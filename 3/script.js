@@ -14,40 +14,40 @@ function solveStatics() {
   const W = parseFloat(document.getElementById("W").value);
   const l = parseFloat(document.getElementById("l").value);
   const d = parseFloat(document.getElementById("d").value);
-  const A_2D = parseVec2(document.getElementById("A").value);
-  const B_2D = parseVec2(document.getElementById("B").value);
-  const C_2D = parseVec2(document.getElementById("C").value);
 
-  const A = [...A_2D, 0];
-  const B = [...B_2D, 0];
-  const C = [...C_2D, 0];
+  const A = [...parseVec2(document.getElementById("A").value), 0];
+  const B = [...parseVec2(document.getElementById("B").value), 0];
+  const C = [...parseVec2(document.getElementById("C").value), 0];
   const W_vec = [0, 0, -W];
   const W_loc = [d/2, l/2, 0];
 
+  // Force vectors
   const FA = [0, 0, 1];
   const FB = [0, 0, 1];
   const FC = [0, 0, 1];
 
-  const A_matrix = [
-    // Sum of forces (z only)
-    [FA[0], FB[0], FC[0]],
-    [FA[1], FB[1], FC[1]],
-    [FA[2], FB[2], FC[2]],
-    // Moments
-    cross(A, FA),
-    cross(B, FB),
-    cross(C, FC)
-  ].map(row => row.map(val => val));
+  // Moment arms
+  const MA = cross(A, FA);
+  const MB = cross(B, FB);
+  const MC = cross(C, FC);
+  const MW = cross(W_loc, W_vec);
 
-  const M_W = cross(W_loc, W_vec);
+  const A_matrix = [
+    [FA[0], FB[0], FC[0]], // Fx
+    [FA[1], FB[1], FC[1]], // Fy
+    [FA[2], FB[2], FC[2]], // Fz
+    [MA[0], MB[0], MC[0]], // Mx
+    [MA[1], MB[1], MC[1]], // My
+    [MA[2], MB[2], MC[2]]  // Mz
+  ];
 
   const b_vector = [
     -W_vec[0],
     -W_vec[1],
     -W_vec[2],
-    -M_W[0],
-    -M_W[1],
-    -M_W[2]
+    -MW[0],
+    -MW[1],
+    -MW[2]
   ];
 
   try {
@@ -63,7 +63,7 @@ function solveStatics() {
       <p>F<sub>C</sub> = ${F_C} kN</p>
     `;
   } catch (err) {
-    document.getElementById("results").innerHTML = "Error solving system. Check input.";
     console.error(err);
+    document.getElementById("results").innerHTML = "⚠️ Error: Unable to solve system. Check your inputs.";
   }
 }
