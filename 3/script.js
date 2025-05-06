@@ -1,5 +1,6 @@
 function solveSystem() {
   try {
+    // Inputs: Parsing values from form fields
     const W = parseFloat(document.getElementById("W").value); // Weight in newtons
     const l = parseFloat(document.getElementById("l").value); // Length in meters
     const d = parseFloat(document.getElementById("d").value); // Width in meters
@@ -11,7 +12,7 @@ function solveSystem() {
     const Cx = parseFloat(document.getElementById("Cx").value); // Coordinates of point C
     const Cy = parseFloat(document.getElementById("Cy").value);
 
-    // Define points in 3D space
+    // Define points in 3D space (z-coordinate is 0 for all)
     const A = [Ax, Ay, 0];
     const B = [Bx, By, 0];
     const C = [Cx, Cy, 0];
