@@ -1,57 +1,49 @@
-function parseVec2(str) {
-  return str.split(',').map(Number);
+// script.js
+function parsePoint(input) {
+  return input.split(',').map(Number).concat(0);
+}
+
+function cross(a, b) {
+  return [
+    a[1] * b[2] - a[2] * b[1],
+    a[2] * b[0] - a[0] * b[2],
+    a[0] * b[1] - a[1] * b[0],
+  ];
 }
 
 function solveStatics() {
-  const W = parseFloat(document.getElementById("W").value);
-  const l = parseFloat(document.getElementById("l").value);
-  const d = parseFloat(document.getElementById("d").value);
-
-  const A = parseVec2(document.getElementById("A").value);
-  const B = parseVec2(document.getElementById("B").value);
-  const C = parseVec2(document.getElementById("C").value);
-  const W_loc = [d/2, l/2];
-
-  // Force equilibrium: F_A + F_B + F_C = W
-  // Moment about A and B: use 2D cross products (scalar)
-  const rB_A = [B[0] - A[0], B[1] - A[1]];
-  const rC_A = [C[0] - A[0], C[1] - A[1]];
-  const rW_A = [W_loc[0] - A[0], W_loc[1] - A[1]];
-
-  const rA_B = [A[0] - B[0], A[1] - B[1]];
-  const rC_B = [C[0] - B[0], C[1] - B[1]];
-  const rW_B = [W_loc[0] - B[0], W_loc[1] - B[1]];
-
-  function cross2D(r, fz = 1) {
-    return r[0] * 0 - r[1] * fz; // 2D moment (z = r_x * Fy - r_y * Fx) -> only Fy = Fz matters
-  }
-
-  const A_matrix = [
-    [1, 1, 1],
-    [0, cross2D(rB_A), cross2D(rC_A)],
-    [cross2D(rA_B), 0, cross2D(rC_B)]
-  ];
-
-  const b_vector = [
-    W,
-    cross2D(rW_A, W),
-    cross2D(rW_B, W)
-  ];
-
   try {
-    const result = math.lusolve(A_matrix, b_vector);
-    const F_A = result[0][0].toFixed(2);
-    const F_B = result[1][0].toFixed(2);
-    const F_C = result[2][0].toFixed(2);
+    const W = parseFloat(document.getElementById('W').value);
+    const l = parseFloat(document.getElementById('l').value);
+    const d = parseFloat(document.getElementById('d').value);
+    const A = parsePoint(document.getElementById('A').value);
+    const B = parsePoint(document.getElementById('B').value);
+    const C = parsePoint(document.getElementById('C').value);
+    const W_vec = [0, 0, -W];
+    const W_loc = [d / 2, l / 2, 0];
 
-    document.getElementById("results").innerHTML = `
-      <p><strong>Results:</strong></p>
-      <p>F<sub>A</sub> = ${F_A} kN</p>
-      <p>F<sub>B</sub> = ${F_B} kN</p>
-      <p>F<sub>C</sub> = ${F_C} kN</p>
-    `;
-  } catch (err) {
-    console.error(err);
-    document.getElementById("results").innerHTML = "⚠️ Error solving system. Check input.";
+    const coeffs = [
+      [0, 0, 1, 0, 0, 1, 0, 0, 1], // sum Fz
+      ...[A, B, C, W_loc].map((pt, idx) => {
+        const F = idx < 3 ? [0, 0, 1] : [-W_vec[0], -W_vec[1], -W_vec[2]];
+        return cross(pt, F);
+      })
+    ];
+
+    const rhs = [W, 0, 0, 0];
+
+    const mathjs = window.math;
+    const A_matrix = mathjs.matrix(coeffs);
+    const b_vector = mathjs.matrix(rhs);
+    const sol = mathjs.lusolve(A_matrix, b_vector);
+    const [F_A, F_B, F_C] = sol._data;
+
+    document.getElementById('output').textContent =
+      `F_A = ${F_A.toFixed(3)} N\n` +
+      `F_B = ${F_B.toFixed(3)} N\n` +
+      `F_C = ${F_C.toFixed(3)} N`;
+
+  } catch (error) {
+    document.getElementById('output').textContent = 'Error solving system. Check input.';
   }
 }
