@@ -9,62 +9,71 @@ document.getElementById('calcForm').addEventListener('submit', function (e) {
   const B = document.getElementById('B').value.split(',').map(Number);
   const C = document.getElementById('C').value.split(',').map(Number);
 
-  if (
-    A.length !== 2 || B.length !== 2 || C.length !== 2 ||
-    A.some(isNaN) || B.some(isNaN) || C.some(isNaN)
-  ) {
-    document.getElementById('error').textContent = "Invalid coordinates. Use format: x,y";
+  if ([A, B, C].some(p => p.length !== 2 || p.some(isNaN))) {
+    document.getElementById('error').textContent = "Please enter coordinates in x,y format.";
     document.getElementById('output').style.display = 'none';
     return;
   }
 
+  const A3 = [A[0], A[1], 0];
+  const B3 = [B[0], B[1], 0];
+  const C3 = [C[0], C[1], 0];
+  const W_vec = [0, 0, -W];
+  const W_loc = [d / 2, l / 2, 0];
+
+  function cross(u, v) {
+    return [
+      u[1] * v[2] - u[2] * v[1],
+      u[2] * v[0] - u[0] * v[2],
+      u[0] * v[1] - u[1] * v[0]
+    ];
+  }
+
+  const Aeq = [
+    // Force equations
+    [0, 0, 1],
+    [0, 0, 1],
+    [0, 0, 1],
+
+    // Moment equations (x, y, z)
+    cross(A3, [0, 0, 1]),
+    cross(B3, [0, 0, 1]),
+    cross(C3, [0, 0, 1])
+  ];
+
+  const b = math.matrix([
+    -W_vec[0],
+    -W_vec[1],
+    -W_vec[2],
+    ...math.subtract(
+      math.multiply(-1, cross(W_loc, W_vec)),
+      [0, 0, 0]
+    )
+  ]);
+
+  const A_matrix = math.matrix([
+    Aeq[0],
+    Aeq[1],
+    Aeq[2],
+    Aeq[3],
+    Aeq[4],
+    Aeq[5]
+  ]);
+
   try {
-    // Convert to 3D
-    const A3 = [A[0], A[1], 0];
-    const B3 = [B[0], B[1], 0];
-    const C3 = [C[0], C[1], 0];
-    const W_vec = [0, 0, -W];
-    const W_loc = [d / 2, l / 2, 0];
-
-    // Cross product helper
-    const crossZ = (r, Fz) => r[0] * 0 - r[1] * Fz; // only z component needed since force is vertical
-
-    // Build coefficient matrix:
-    // Row 1: F_A + F_B + F_C = W
-    // Row 2: Moment about x (z-components from cross product with y)
-    // Row 3: Moment about y (z-components from cross product with x)
-    const Aeq = [
-      [1, 1, 1],
-      [-A3[1], -B3[1], -C3[1]],
-      [A3[0], B3[0], C3[0]]
-    ];
-
-    // Right-hand side
-    const M_W = [
-      -W_loc[1] * W_vec[2], // moment about x (from y)
-      W_loc[0] * W_vec[2]   // moment about y (from x)
-    ];
-
-    const beq = [
-      W,
-      -M_W[0],
-      -M_W[1]
-    ];
-
-    const result = math.lusolve(Aeq, beq);
-
+    const result = math.lusolve(A_matrix, b);
     const F_A = result[0][0];
     const F_B = result[1][0];
     const F_C = result[2][0];
 
-    document.getElementById('F_A').textContent = F_A.toFixed(2);
-    document.getElementById('F_B').textContent = F_B.toFixed(2);
-    document.getElementById('F_C').textContent = F_C.toFixed(2);
+    document.getElementById('F_A').textContent = F_A.toFixed(4);
+    document.getElementById('F_B').textContent = F_B.toFixed(4);
+    document.getElementById('F_C').textContent = F_C.toFixed(4);
     document.getElementById('output').style.display = 'block';
     document.getElementById('error').textContent = '';
   } catch (err) {
-    console.error("Error solving system:", err);
+    document.getElementById('error').textContent = "Error solving system. Check your input.";
     document.getElementById('output').style.display = 'none';
-    document.getElementById('error').textContent = "Error solving system. Check input values.";
+    console.error(err);
   }
 });
