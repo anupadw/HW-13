@@ -20,6 +20,7 @@ document.getElementById('calcForm').addEventListener('submit', function (e) {
     const W_vec = [0, 0, -W];
     const W_loc = [d / 2, l / 2, 0];
 
+    // Cross product function
     function cross(u, v) {
         return [
             u[1] * v[2] - u[2] * v[1],
@@ -28,34 +29,39 @@ document.getElementById('calcForm').addEventListener('submit', function (e) {
         ];
     }
 
-    const eqn1 = [1, 0, 0, 0, 0, 0]; 
-    const eqn2 = [0, 1, 0, 0, 0, 0]; 
-    const eqn3 = [0, 0, 1, 0, 0, 0]; 
+    // Force and moment equations
+    const eqn1 = [1, 0, 0, 0, 0, 0]; // Force equilibrium in x
+    const eqn2 = [0, 1, 0, 0, 0, 0]; // Force equilibrium in y
+    const eqn3 = [0, 0, 1, 0, 0, 0]; // Force equilibrium in z
 
     const M_A = cross(A3, [0, 0, 1]);
     const M_B = cross(B3, [0, 0, 1]);
     const M_C = cross(C3, [0, 0, 1]);
 
-    const eqn4 = [...M_A];
-    const eqn5 = [...M_B];
-    const eqn6 = [...M_C];
+    const eqn4 = [...M_A]; // Moment equilibrium for A
+    const eqn5 = [...M_B]; // Moment equilibrium for B
+    const eqn6 = [...M_C]; // Moment equilibrium for C
 
+    // Create coefficient matrix for the system of equations
     const Aeq = [
         eqn1, eqn2, eqn3, 
         eqn4, eqn5, eqn6
     ];
 
+    // Create the constants vector (forces and moments)
     const b = [
         W_vec[0], W_vec[1], W_vec[2],
         ...cross(W_loc, W_vec)
     ];
 
     try {
+        // Solve system of equations
         const result = math.lusolve(Aeq, b);
         const F_A = result[0][0];
         const F_B = result[1][0];
         const F_C = result[2][0];
 
+        // Output results
         document.getElementById('F_A').textContent = F_A.toFixed(4);
         document.getElementById('F_B').textContent = F_B.toFixed(4);
         document.getElementById('F_C').textContent = F_C.toFixed(4);
