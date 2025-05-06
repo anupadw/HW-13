@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HW13.4. Traffic Light</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>HW13.4. Traffic Light</h1>
+    
+    <label>Weight of Arm (W_arm): <input type="number" id="W_arm" value="175" /></label>
+    <label>Force X (F_x): <input type="number" id="F_x" value="85" /></label>
+    <label>Force Y (F_y): <input type="number" id="F_y" value="-5" /></label>
+    <label>G_arm coordinates (x, y, z): 
+      <input type="number" id="Gx" value="0" />
+      <input type="number" id="Gy" value="9" />
+      <input type="number" id="Gz" value="14" />
+    </label>
+    <label>P coordinates (x, y, z): 
+      <input type="number" id="Px" value="0" />
+      <input type="number" id="Py" value="13" />
+      <input type="number" id="Pz" value="14" />
+    </label>
+
+    <button onclick="solveStatics()">Solve</button>
+
+    <div id="output"></div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
